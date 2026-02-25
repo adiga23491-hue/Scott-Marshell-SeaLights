@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SeaLights Reports — Tricentis</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --tri-navy:    #0e2a5c;
+    --tri-blue:    #1464c8;
+    --tri-blue-lt: #3a80d8;
+    --tri-orange:  #f5631a;
+    --tri-orange-dk: #d94f0e;
+    --bg:          #f4f6fa;
+    --surface:     #ffffff;
+    --border:      #dde3ef;
+    --text:        #0e2a5c;
+    --text-mid:    #4a5a7a;
+    --text-soft:   #8a96b0;
+    --shadow-sm:   0 1px 4px rgba(14,42,92,0.07);
+    --shadow-md:   0 4px 20px rgba(14,42,92,0.10);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: var(--tri-navy);
+    padding: 0 48px;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 2px 12px rgba(14,42,92,0.25);
+  }
+
+  /* orange accent bar at top */
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--tri-orange);
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  /* Tricentis logo SVG inline */
+  .tri-logo {
+    height: 28px;
+    display: flex;
+    align-items: center;
+  }
+
+  .header-divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255,255,255,0.18);
+  }
+
+  .header-title {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+
+  .header-sub {
+    font-size: 0.62rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .back-btn {
+    display: none;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.75);
+    padding: 7px 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+
+  .back-btn:hover {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border-color: rgba(255,255,255,0.35);
+  }
+
+  .back-btn.visible { display: flex; }
+
+  /* ─── PAGES ─── */
+  .page { display:none; position:relative; }
+  .page.active { display:block; animation: fadeUp 0.3s ease both; }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(10px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* ─── HOME ─── */
+  .home-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 68px);
+    padding: 60px 24px;
+  }
+
+  .home-kicker {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--tri-orange);
+    margin-bottom: 12px;
+  }
+
+  .home-title {
+    font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+    font-weight: 700;
+    color: var(--tri-navy);
+    text-align: center;
+    line-height: 1.15;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .home-title span { color: var(--tri-blue); }
+
+  .home-desc {
+    font-size: 0.88rem;
+    color: var(--text-mid);
+    margin-bottom: 50px;
+    font-weight: 400;
+  }
+
+  .choice-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+    max-width: 540px;
+  }
+
+  .choice-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 44px 32px;
+    cursor: pointer;
+    transition: all 0.22s;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .choice-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--tri-blue);
+    transform: scaleX(0);
+    transition: transform 0.25s ease;
+    transform-origin: left;
+  }
+
+  .choice-card:hover {
+    border-color: var(--tri-blue-lt);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+  }
+
+  .choice-card:hover::after { transform: scaleX(1); }
+
+  .card-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--tri-navy);
+    margin-bottom: 5px;
+    letter-spacing: -0.01em;
+  }
+
+  .card-desc {
+    font-size: 0.72rem;
+    color: var(--text-soft);
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  /* ─── LIST PAGES ─── */
+  .list-wrap {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 52px 28px 80px;
+  }
+
+  .page-kicker {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--tri-orange);
+    margin-bottom: 8px;
+  }
+
+  .page-heading {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--tri-navy);
+    letter-spacing: -0.02em;
+    margin-bottom: 5px;
+  }
+
+  .page-sub {
+    font-size: 0.78rem;
+    color: var(--text-mid);
+    margin-bottom: 36px;
+  }
+
+  /* Featured All AMS */
+  .card-featured {
+    background: var(--tri-navy);
+    border-radius: 8px;
+    padding: 22px 28px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none;
+    transition: all 0.22s;
+    box-shadow: 0 4px 16px rgba(14,42,92,0.2);
+  }
+
+  .card-featured:hover {
+    background: #0c2454;
+    box-shadow: 0 8px 28px rgba(14,42,92,0.3);
+    transform: translateY(-2px);
+  }
+
+  .card-featured .rtag {
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--tri-orange);
+    margin-bottom: 4px;
+  }
+
+  .card-featured .rname {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.01em;
+  }
+
+  .card-featured .arrow-ico {
+    color: rgba(255,255,255,0.5);
+    font-size: 1.1rem;
+    transition: all 0.2s;
+  }
+
+  .card-featured:hover .arrow-ico {
+    color: #fff;
+    transform: translateX(5px);
+  }
+
+  /* Report list */
+  .report-list {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .report-card {
+    padding: 20px 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none;
+    color: inherit;
+    border-left: 3px solid transparent;
+    transition: all 0.18s;
+    background: var(--surface);
+  }
+
+  .report-card + .report-card {
+    border-top: 1px solid var(--border);
+  }
+
+  .report-card:hover {
+    background: #f0f5ff;
+    border-left-color: var(--tri-blue);
+    padding-left: 32px;
+  }
+
+  .r-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--tri-navy);
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .r-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .r-meta-item {
+    font-size: 0.68rem;
+    color: var(--text-mid);
+  }
+
+  .r-meta-item .lbl {
+    font-size: 0.58rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-soft);
+    margin-right: 4px;
+  }
+
+  .r-arrow {
+    color: var(--border);
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    margin-left: 16px;
+    transition: all 0.18s;
+  }
+
+  .report-card:hover .r-arrow {
+    color: var(--tri-blue);
+    transform: translateX(4px);
+  }
+
+  .r-territory {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--tri-blue);
+    background: #edf3fb;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid #c8daف4;
+  }
+
+  @media(max-width:520px){
+    .choice-grid { grid-template-columns: 1fr; }
+    .header { padding: 0 20px; }
+    .list-wrap { padding: 36px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-left">
+    <div class="header-title">
+      <div class="header-name">Scott Marshell</div>
+      <div class="header-sub">SeaLights Reports</div>
+    </div>
+  </div>
+
+  <button class="back-btn" id="backBtn" onclick="goHome()">
+    <span>←</span> <span>All Reports</span>
+  </button>
+</header>
+
+<!-- ══════════ HOME ══════════ -->
+<div class="page active" id="page-home">
+  <div class="home-wrap">
+    <div class="home-kicker">Sales Intelligence</div>
+    <h1 class="home-title">SeaLights <span>Reports</span></h1>
+    <p class="home-desc">Select a view to access your Salesforce reports</p>
+    <div class="choice-grid">
+      <div class="choice-card" onclick="showPage('page-geo')">
+        <div class="card-title">By Geo</div>
+        <div class="card-desc">Territory Reports</div>
+      </div>
+      <div class="choice-card" onclick="showPage('page-ae')">
+        <div class="card-title">By AE</div>
+        <div class="card-desc">Account Executive Reports</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ BY GEO ══════════ -->
+<div class="page" id="page-geo">
+  <div class="list-wrap">
+    <div class="page-kicker">Geographic View</div>
+    <h2 class="page-heading">By Geo</h2>
+    <p class="page-sub">Click any territory to open its Salesforce report</p>
+
+    <a class="card-featured" href="https://tri-force.lightning.force.com/lightning/r/Report/00OPo00000g72mUMAQ/view?queryScope=userFolders" target="_blank">
+      <div>
+        <div class="rtag">Overview</div>
+        <div class="rname">All AMS</div>
+      </div>
+      <div class="arrow-ico">→</div>
+    </a>
+
+    <div class="report-list">
+
+      <a class="report-card" href="https://tri-force.lightning.force.com/lightning/r/Report/00OPo00000g6xGZMAY/view?queryScope=userFolders" target="_blank">
+        <div class="r-left">
+          <div class="r-name">Pacific</div>
+          <div class="r-meta">
+            <span class="r-meta-item"><span class="lbl">FLM</span>Colin McGandy</span>
+            <span class="r-meta-item"><span class="lbl">SeaLights</span>Bruce Read</span>
+          </div>
+        </div>
+        <div class="r-arrow">→</div>
+      </a>
+
+      <a class="report-card" href="https://tri-force.lightning.force.com/lightning/r/Report/00OPo00000g77XdMAI/view?queryScope=userFolders" target="_blank">
+        <div class="r-left">
+          <div class="r-name">Central</div>
+          <div class="r-meta">
+            <span class="r-meta-item"><span class="lbl">FLM</span>Bill Ross</span>
+            <span class="r-meta-item"><span class="lbl">SeaLights</span>Daniel Blendis</span>
+          </div>
+        </div>
+        <div class="r-arrow">→</div>
+      </a>
+
+      <a class="report-card" href="https://tri-force.lightning.force.com/lightning/r/Report/00OPo00000g76F0MAI/view?queryScope=userFolders" target="_blank">
+        <div class="r-left">
+          <div class="r-name">TOLA</div>
+          <div class="r-meta">
+            <span class="r-meta-item"><span class="lbl">FLM</span>Chuck Kelly</span>
+            <span class="r-meta-item"><span class="lbl">SeaLights</span>Bruce Read</span>
+          </div>
+        </div>
+        <div class="r-arrow">→</div>
+      </a>
+
+      <a class="report-card" href="https://tri-force.lightning.force.com/lightning/r/Report/00OPo00000g6xN1MAI/view?queryScope=userFolders" target="_blank">
+        <div class="r-left">
+          <div class="r-name">SouthEast</div>
+          <div class="r-meta">
+            <span class="r-meta-item"><span class="lbl">FLM</span>Doug Hamilton</span>
+            <span class="r-meta-item"><span class="lbl">SeaLights</span>Arik Fux</span>
+          </div>
+        </div>
+        <div class="r-arrow">→</div>
+      </a>
+
+      <a class="report-card" href="https://tri-force.lightning.force.com/lightning/r/Report/00OPo00000g78blMAA/view?queryScope=userFolders" target="_blank">
+        <div class="r-left">
+          <div class="r-name">NorthEast</div>
+          <div class="r-meta">
+            <span class="r-meta-item"><span class="lbl">FLM</span>Bekim Protopapa</span>
+          </div>
+        </div>
+        <div class="r-arrow">→</div>
+      </a>
+
+      <a class="report-card" href="https://tri-force.lightning.force.com/lightning/r/Report/00OPo00000g78qHMAQ/view?queryScope=userFolders" target="_blank">
+        <div class="r-left">
+          <div class="r-name">Canada</div>
+          <div class="r-meta">
+            <span class="r-meta-item"><span class="lbl">FLM</span>Colin McGandy</span>
+            <span class="r-meta-item"><span class="lbl">SeaLights</span>Daniel Blendis</span>
+          </div>
+        </div>
+        <div class="r-arrow">→</div>
+      </a>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ BY AE ══════════ -->
+<div class="page" id="page-ae">
+  <div class="list-wrap">
+    <div class="page-kicker">Account Executive View</div>
+    <h2 class="page-heading">By AE</h2>
+    <p class="page-sub">Click an account executive to open their Salesforce report</p>
+
+    <div class="report-list">
+
+      <a class="report-card" href="https://tri-force.lightning.force.com/lightning/r/Report/00OPo00000fsSsXMAU/edit?queryScope=userFolders" target="_blank">
+        <div class="r-left">
+          <div class="r-name">Bruce Read</div>
+          <div class="r-meta">
+            <span class="r-territory">TOLA &nbsp;·&nbsp; Pacific</span>
+          </div>
+        </div>
+        <div class="r-arrow">→</div>
+      </a>
+
+      <a class="report-card" href="https://tri-force.lightning.force.com/lightning/r/Report/00OPo00000fsg5tMAA/view?queryScope=userFolders" target="_blank">
+        <div class="r-left">
+          <div class="r-name">Daniel Blendis</div>
+          <div class="r-meta">
+            <span class="r-territory">Central &nbsp;·&nbsp; Canada</span>
+          </div>
+        </div>
+        <div class="r-arrow">→</div>
+      </a>
+
+      <a class="report-card" href="https://tri-force.lightning.force.com/lightning/r/Report/00OPo00000fshbRMAQ/view?queryScope=userFolders" target="_blank">
+        <div class="r-left">
+          <div class="r-name">Arik Fux</div>
+          <div class="r-meta">
+            <span class="r-territory">SouthEast</span>
+          </div>
+        </div>
+        <div class="r-arrow">→</div>
+      </a>
+
+      <a class="report-card" href="https://tri-force.lightning.force.com/lightning/r/Report/00OPo00000fshbRMAQ/view?queryScope=userFolders" target="_blank">
+        <div class="r-left">
+          <div class="r-name">Jake Litke</div>
+          <div class="r-meta">
+            <span class="r-territory">SAP meetings</span>
+          </div>
+        </div>
+        <div class="r-arrow">→</div>
+      </a>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const isHome = id === 'page-home';
+    const btn = document.getElementById('backBtn');
+    if (isHome) btn.classList.remove('visible');
+    else btn.classList.add('visible');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function goHome() {
+    showPage('page-home');
+  }
+</script>
+</body>
+</html>
